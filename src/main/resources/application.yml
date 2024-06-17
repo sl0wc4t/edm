@@ -1,6 +1,13 @@
 spring:
   application:
     name: edm
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  data:
+    rest:
+      base-path: edm-data
   datasource:
     url: jdbc:postgresql://localhost:5432/edmdb
     username: postgres

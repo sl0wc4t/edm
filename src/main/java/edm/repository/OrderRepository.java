@@ -1,4 +1,4 @@
-package edm.data;
+package edm.repository;
 
 import edm.entity.Order;
 import org.springframework.data.repository.CrudRepository;
