@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
-public class DefaultAdvice {
+public class DefaultAdviceController {
 
     @ExceptionHandler({ValidationException.class, EntityNotFoundException.class})
     public ResponseEntity<?> handleException(ValidationException e) {
