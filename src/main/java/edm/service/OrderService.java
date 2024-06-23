@@ -5,9 +5,11 @@ import edm.repository.OrderRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
+@Transactional
 public class OrderService {
 
     private OrderRepository orderRepository;

@@ -1,8 +1,8 @@
 package edm.repository;
 
 import edm.entity.Division;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface DivisionRepository extends CrudRepository<Division, Long> {
+public interface DivisionRepository extends JpaRepository<Division, Long> {
 
 }

@@ -1,8 +1,8 @@
 package edm.repository;
 
 import edm.entity.Organization;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface OrganizationRepository extends CrudRepository<Organization, Long> {
+public interface OrganizationRepository extends JpaRepository<Organization, Long> {
 
 }
