@@ -5,6 +5,9 @@ import edm.model.entity.Order;
 import edm.repository.OrderRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,8 +20,9 @@ public class OrderService {
 
     private OrderRepository orderRepository;
 
-    public List<OrderDto> getAll() {
-        return orderRepository.findAll().stream()
+    public List<OrderDto> getAll(Integer pageNumber, Integer pageSize, String field) {
+        Pageable pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by(field));
+        return orderRepository.findAll(pageRequest).stream()
                 .map(this::toDto)
                 .toList();
     }

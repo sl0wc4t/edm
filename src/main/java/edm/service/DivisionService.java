@@ -5,6 +5,9 @@ import edm.model.entity.Division;
 import edm.repository.DivisionRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,8 +20,9 @@ public class DivisionService {
 
     private DivisionRepository divisionRepository;
 
-    public List<DivisionDto> getAll() {
-        return divisionRepository.findAll().stream()
+    public List<DivisionDto> getAll(Integer pageNumber, Integer pageSize, String field) {
+        Pageable pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by(field));
+        return divisionRepository.findAll(pageRequest).stream()
                 .map(this::toDto)
                 .toList();
     }

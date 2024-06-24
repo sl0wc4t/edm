@@ -1,7 +1,6 @@
 package edm.controller;
 
 import edm.model.dto.EmployeeDto;
-import edm.model.entity.Employee;
 import edm.service.EmployeeService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -20,8 +19,11 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
     @GetMapping
-    public ResponseEntity<List<EmployeeDto>> getAllEmployees() {
-        return ResponseEntity.ok(employeeService.getAll());
+    public ResponseEntity<List<EmployeeDto>> getAllEmployees(
+            @RequestParam(defaultValue = "0", required = false) Integer pageNumber,
+            @RequestParam(defaultValue = "5", required = false) Integer pageSize,
+            @RequestParam(defaultValue = "id", required = false) String sortBy) {
+        return ResponseEntity.ok(employeeService.getAll(pageNumber, pageSize, sortBy));
     }
 
     @GetMapping(path = "/{id}")

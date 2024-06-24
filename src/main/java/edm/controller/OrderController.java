@@ -19,8 +19,11 @@ public class OrderController {
     private OrderService orderService;
 
     @GetMapping
-    public ResponseEntity<List<OrderDto>> getAllOrders() {
-        return ResponseEntity.ok(orderService.getAll());
+    public ResponseEntity<List<OrderDto>> getAllOrders(
+            @RequestParam(defaultValue = "0", required = false) Integer pageNumber,
+            @RequestParam(defaultValue = "5", required = false) Integer pageSize,
+            @RequestParam(defaultValue = "id", required = false) String sortBy) {
+        return ResponseEntity.ok(orderService.getAll(pageNumber, pageSize, sortBy));
     }
 
     @GetMapping(path = "/{id}")

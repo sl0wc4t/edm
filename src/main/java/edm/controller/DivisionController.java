@@ -19,8 +19,11 @@ public class DivisionController {
     private DivisionService divisionService;
 
     @GetMapping
-    public ResponseEntity<List<DivisionDto>> getAllDivisions() {
-        return ResponseEntity.ok(divisionService.getAll());
+    public ResponseEntity<List<DivisionDto>> getAllDivisions(
+            @RequestParam(defaultValue = "0", required = false) Integer pageNumber,
+            @RequestParam(defaultValue = "5", required = false) Integer pageSize,
+            @RequestParam(defaultValue = "id", required = false) String sortBy) {
+        return ResponseEntity.ok(divisionService.getAll(pageNumber, pageSize, sortBy));
     }
 
     @GetMapping(path = "/{id}")
