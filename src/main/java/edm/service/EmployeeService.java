@@ -1,11 +1,14 @@
 package edm.service;
 
-import edm.entity.Employee;
+import edm.model.dto.EmployeeDto;
+import edm.model.entity.Employee;
 import edm.repository.EmployeeRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -14,29 +17,49 @@ public class EmployeeService {
 
     EmployeeRepository employeeRepository;
 
-    public Iterable<Employee> getAll() {
-        return employeeRepository.findAll();
+    public List<EmployeeDto> getAll() {
+        return employeeRepository.findAll().stream()
+                .map(this::toDto)
+                .toList();
     }
 
-    public Employee getById(Long id) {
-        return employeeRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("No Employee found with id = " + id));
+    public EmployeeDto getById(Long id) {
+        return toDto(employeeRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("No Employee found with id = " + id)));
     }
 
-    public Employee save(Employee employee) {
-        return employeeRepository.save(employee);
+    public EmployeeDto save(EmployeeDto employeeDto) {
+        return toDto(employeeRepository.save(toEntity(employeeDto)));
     }
 
-    public Employee update(Employee patch) {
-        Employee employee = getById(patch.getId());
-        employee.setFirstname(patch.getFirstname());
-        employee.setLastname(patch.getLastname());
-        employee.setMiddlename(patch.getMiddlename());
-        return save(employee);
+    public EmployeeDto update(EmployeeDto patch) {
+        EmployeeDto employeeDto = getById(patch.getId());
+        employeeDto.setFirstname(patch.getFirstname());
+        employeeDto.setLastname(patch.getLastname());
+        employeeDto.setMiddlename(patch.getMiddlename());
+        return save(employeeDto);
     }
 
     public void deleteById(Long id) {
         employeeRepository.deleteById(id);
+    }
+
+    private EmployeeDto toDto(Employee employee) {
+        return EmployeeDto.builder()
+                .id(employee.getId())
+                .firstname(employee.getFirstname())
+                .lastname(employee.getLastname())
+                .middlename(employee.getMiddlename())
+                .build();
+    }
+
+    private Employee toEntity(EmployeeDto employeeDto) {
+        return Employee.builder()
+                .id(employeeDto.getId())
+                .firstname(employeeDto.getFirstname())
+                .lastname(employeeDto.getLastname())
+                .middlename(employeeDto.getMiddlename())
+                .build();
     }
 
 }

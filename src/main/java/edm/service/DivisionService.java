@@ -1,11 +1,14 @@
 package edm.service;
 
-import edm.entity.Division;
+import edm.model.dto.DivisionDto;
+import edm.model.entity.Division;
 import edm.repository.DivisionRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -14,29 +17,49 @@ public class DivisionService {
 
     private DivisionRepository divisionRepository;
 
-    public Iterable<Division> getAll() {
-        return divisionRepository.findAll();
+    public List<DivisionDto> getAll() {
+        return divisionRepository.findAll().stream()
+                .map(this::toDto)
+                .toList();
     }
 
-    public Division getById(Long id) {
-        return divisionRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("No Division found with id = " + id));
+    public DivisionDto getById(Long id) {
+        return toDto(divisionRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("No Division found with id = " + id)));
     }
 
-    public Division save(Division division) {
-        return divisionRepository.save(division);
+    public DivisionDto save(DivisionDto divisionDto) {
+        return toDto(divisionRepository.save(toEntity(divisionDto)));
     }
 
-    public Division update(Division patch) {
-        Division division = getById(patch.getId());
-        division.setName(patch.getName());
-        division.setContactDetails(patch.getContactDetails());
-        division.setHead(patch.getHead());
-        return save(division);
+    public DivisionDto update(DivisionDto patch) {
+        DivisionDto divisionDto = getById(patch.getId());
+        divisionDto.setName(patch.getName());
+        divisionDto.setContactDetails(patch.getContactDetails());
+        divisionDto.setHead(patch.getHead());
+        return save(divisionDto);
     }
 
     public void deleteById(Long id) {
         divisionRepository.deleteById(id);
+    }
+
+    private DivisionDto toDto(Division division) {
+        return DivisionDto.builder()
+                .id(division.getId())
+                .name(division.getName())
+                .contactDetails(division.getContactDetails())
+                .head(division.getHead())
+                .build();
+    }
+
+    private Division toEntity(DivisionDto divisionDto) {
+        return Division.builder()
+                .id(divisionDto.getId())
+                .name(divisionDto.getName())
+                .contactDetails(divisionDto.getContactDetails())
+                .head(divisionDto.getHead())
+                .build();
     }
 
 }

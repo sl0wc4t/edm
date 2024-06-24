@@ -1,12 +1,15 @@
 package edm.controller;
 
-import edm.entity.Order;
+import edm.model.dto.OrderDto;
 import edm.service.OrderService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/orders")
@@ -16,22 +19,22 @@ public class OrderController {
     private OrderService orderService;
 
     @GetMapping
-    public ResponseEntity<Iterable<Order>> getAllOrders() {
+    public ResponseEntity<List<OrderDto>> getAllOrders() {
         return ResponseEntity.ok(orderService.getAll());
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<Order> getOrderById(@PathVariable("id") Long id) {
+    public ResponseEntity<OrderDto> getOrderById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(orderService.getById(id));
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Order> addNewOrder(@RequestBody Order order) {
-        return new ResponseEntity<>(orderService.save(order), HttpStatus.CREATED);
+    public ResponseEntity<OrderDto> addNewOrder(@Valid @RequestBody OrderDto orderDto) {
+        return new ResponseEntity<>(orderService.save(orderDto), HttpStatus.CREATED);
     }
 
     @PatchMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Order> updateOrder(@RequestBody Order patch) {
+    public ResponseEntity<OrderDto> updateOrder(@Valid @RequestBody OrderDto patch) {
         return ResponseEntity.ok(orderService.update(patch));
     }
 

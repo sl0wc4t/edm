@@ -1,25 +1,25 @@
-package edm.entity;
+package edm.model.dto;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@Entity(name = "employees")
-public class Employee {
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class EmployeeDto {
 
-    @Id
-    @GeneratedValue
     private Long id;
 
-    @NotNull
+    @NotNull(message = "Firstname is required")
     @Size(min = 5, max = 50, message = "Firstname must be 5-50 characters long")
     private String firstname;
 
-    @NotNull
+    @NotNull(message = "Lastname is required")
     @Size(min = 5, max = 50, message = "Lastname must be 5-50 characters long")
     private String lastname;
 

@@ -1,11 +1,14 @@
 package edm.service;
 
-import edm.entity.Organization;
+import edm.model.dto.OrganizationDto;
+import edm.model.entity.Organization;
 import edm.repository.OrganizationRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -14,30 +17,52 @@ public class OrganizationService {
 
     private OrganizationRepository organizationRepository;
 
-    public Iterable<Organization> getAll() {
-        return organizationRepository.findAll();
+    public List<OrganizationDto> getAll() {
+        return organizationRepository.findAll().stream()
+                .map(this::toDto)
+                .toList();
     }
 
-    public Organization getById(Long id) {
-        return organizationRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("No Organization found with id = " + id));
+    public OrganizationDto getById(Long id) {
+        return toDto(organizationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("No Organization found with id = " + id)));
     }
 
-    public Organization save(Organization organization) {
-        return organizationRepository.save(organization);
+    public OrganizationDto save(OrganizationDto organizationDto) {
+        return toDto(organizationRepository.save(toEntity(organizationDto)));
     }
 
-    public Organization update(Organization patch) {
-        Organization organization = getById(patch.getId());
-        organization.setName(patch.getName());
-        organization.setPhysicalAddress(patch.getPhysicalAddress());
-        organization.setLegalAddress(patch.getLegalAddress());
-        organization.setHead(patch.getHead());
-        return save(organization);
+    public OrganizationDto update(OrganizationDto patch) {
+        OrganizationDto organizationDto = getById(patch.getId());
+        organizationDto.setName(patch.getName());
+        organizationDto.setPhysicalAddress(patch.getPhysicalAddress());
+        organizationDto.setLegalAddress(patch.getLegalAddress());
+        organizationDto.setHead(patch.getHead());
+        return save(organizationDto);
     }
 
     public void deleteById(Long id) {
         organizationRepository.deleteById(id);
+    }
+
+    private OrganizationDto toDto(Organization organization) {
+        return OrganizationDto.builder()
+                .id(organization.getId())
+                .name(organization.getName())
+                .physicalAddress(organization.getPhysicalAddress())
+                .legalAddress(organization.getLegalAddress())
+                .head(organization.getHead())
+                .build();
+    }
+
+    private Organization toEntity(OrganizationDto organizationDto) {
+        return Organization.builder()
+                .id(organizationDto.getId())
+                .name(organizationDto.getName())
+                .physicalAddress(organizationDto.getPhysicalAddress())
+                .legalAddress(organizationDto.getLegalAddress())
+                .head(organizationDto.getHead())
+                .build();
     }
 
 }

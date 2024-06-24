@@ -1,11 +1,14 @@
 package edm.service;
 
-import edm.entity.Order;
+import edm.model.dto.OrderDto;
+import edm.model.entity.Order;
 import edm.repository.OrderRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -14,32 +17,58 @@ public class OrderService {
 
     private OrderRepository orderRepository;
 
-    public Iterable<Order> getAll() {
-        return orderRepository.findAll();
+    public List<OrderDto> getAll() {
+        return orderRepository.findAll().stream()
+                .map(this::toDto)
+                .toList();
     }
 
-    public Order getById(Long id) {
-        return orderRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("No Order found with id = " + id));
+    public OrderDto getById(Long id) {
+        return toDto(orderRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("No Order found with id = " + id)));
     }
 
-    public Order save(Order order) {
-        return orderRepository.save(order);
+    public OrderDto save(OrderDto orderDto) {
+        return toDto(orderRepository.save(toEntity(orderDto)));
     }
 
-    public Order update(Order patch) {
-        Order order = getById(patch.getId());
-        order.setSubject(patch.getSubject());
-        order.setAuthor(patch.getAuthor());
-        order.setPerformerList(patch.getPerformerList());
-        order.setDeadline(patch.getDeadline());
-        order.setControlSign(patch.isControlSign());
-        order.setExecutionSign(patch.isExecutionSign());
-        return save(order);
+    public OrderDto update(OrderDto patch) {
+        OrderDto orderDto = getById(patch.getId());
+        orderDto.setSubject(patch.getSubject());
+        orderDto.setAuthor(patch.getAuthor());
+        orderDto.setPerformerList(patch.getPerformerList());
+        orderDto.setDeadline(patch.getDeadline());
+        orderDto.setControlSign(patch.isControlSign());
+        orderDto.setExecutionSign(patch.isExecutionSign());
+        return save(orderDto);
     }
 
     public void deleteById(Long id) {
         orderRepository.deleteById(id);
+    }
+
+    private OrderDto toDto(Order order) {
+        return OrderDto.builder()
+                .id(order.getId())
+                .subject(order.getSubject())
+                .author(order.getAuthor())
+                .performerList(order.getPerformerList())
+                .deadline(order.getDeadline())
+                .controlSign(order.isControlSign())
+                .executionSign(order.isExecutionSign())
+                .build();
+    }
+
+    private Order toEntity(OrderDto orderDto) {
+        return Order.builder()
+                .id(orderDto.getId())
+                .subject(orderDto.getSubject())
+                .author(orderDto.getAuthor())
+                .performerList(orderDto.getPerformerList())
+                .deadline(orderDto.getDeadline())
+                .controlSign(orderDto.isControlSign())
+                .executionSign(orderDto.isExecutionSign())
+                .build();
     }
 
 }
