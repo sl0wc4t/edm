@@ -5,13 +5,12 @@ import edm.model.entity.Order;
 import edm.repository.OrderRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -20,11 +19,10 @@ public class OrderService {
 
     private OrderRepository orderRepository;
 
-    public List<OrderDto> getAll(Integer pageNumber, Integer pageSize, String field) {
+    public Page<OrderDto> getAll(Integer pageNumber, Integer pageSize, String field) {
         Pageable pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by(field));
-        return orderRepository.findAll(pageRequest).stream()
-                .map(this::toDto)
-                .toList();
+        return orderRepository.findAll(pageRequest)
+                .map(this::toDto);
     }
 
     public OrderDto getById(Long id) {

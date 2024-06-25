@@ -5,13 +5,12 @@ import edm.model.entity.Organization;
 import edm.repository.OrganizationRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -20,11 +19,10 @@ public class OrganizationService {
 
     private OrganizationRepository organizationRepository;
 
-    public List<OrganizationDto> getAll(Integer pageNumber, Integer pageSize, String field) {
+    public Page<OrganizationDto> getAll(Integer pageNumber, Integer pageSize, String field) {
         Pageable pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by(field));
-        return organizationRepository.findAll(pageRequest).stream()
-                .map(this::toDto)
-                .toList();
+        return organizationRepository.findAll(pageRequest)
+                .map(this::toDto);
     }
 
     public OrganizationDto getById(Long id) {

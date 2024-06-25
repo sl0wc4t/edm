@@ -5,13 +5,12 @@ import edm.model.entity.Division;
 import edm.repository.DivisionRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -20,11 +19,10 @@ public class DivisionService {
 
     private DivisionRepository divisionRepository;
 
-    public List<DivisionDto> getAll(Integer pageNumber, Integer pageSize, String field) {
+    public Page<DivisionDto> getAll(Integer pageNumber, Integer pageSize, String field) {
         Pageable pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by(field));
-        return divisionRepository.findAll(pageRequest).stream()
-                .map(this::toDto)
-                .toList();
+        return divisionRepository.findAll(pageRequest)
+                .map(this::toDto);
     }
 
     public DivisionDto getById(Long id) {

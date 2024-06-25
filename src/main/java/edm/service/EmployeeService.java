@@ -5,13 +5,12 @@ import edm.model.entity.Employee;
 import edm.repository.EmployeeRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -20,11 +19,10 @@ public class EmployeeService {
 
     EmployeeRepository employeeRepository;
 
-    public List<EmployeeDto> getAll(Integer pageNumber, Integer pageSize, String field) {
+    public Page<EmployeeDto> getAll(Integer pageNumber, Integer pageSize, String field) {
         Pageable pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by(field));
-        return employeeRepository.findAll(pageRequest).stream()
-                .map(this::toDto)
-                .toList();
+        return employeeRepository.findAll(pageRequest)
+                .map(this::toDto);
     }
 
     public EmployeeDto getById(Long id) {

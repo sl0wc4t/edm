@@ -4,12 +4,11 @@ import edm.model.dto.EmployeeDto;
 import edm.service.EmployeeService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(path = "/employees")
@@ -19,7 +18,7 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
     @GetMapping
-    public ResponseEntity<List<EmployeeDto>> getAllEmployees(
+    public ResponseEntity<Page<EmployeeDto>> getAllEmployees(
             @RequestParam(defaultValue = "0", required = false) Integer pageNumber,
             @RequestParam(defaultValue = "5", required = false) Integer pageSize,
             @RequestParam(defaultValue = "id", required = false) String sortBy) {

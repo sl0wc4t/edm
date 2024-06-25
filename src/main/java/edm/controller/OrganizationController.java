@@ -4,12 +4,11 @@ import edm.model.dto.OrganizationDto;
 import edm.service.OrganizationService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(path = "/organizations")
@@ -19,7 +18,7 @@ public class OrganizationController {
     private OrganizationService organizationService;
 
     @GetMapping
-    public ResponseEntity<List<OrganizationDto>> getAllOrganizations(
+    public ResponseEntity<Page<OrganizationDto>> getAllOrganizations(
             @RequestParam(defaultValue = "0", required = false) Integer pageNumber,
             @RequestParam(defaultValue = "5", required = false) Integer pageSize,
             @RequestParam(defaultValue = "id", required = false) String sortBy) {

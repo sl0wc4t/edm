@@ -4,12 +4,11 @@ import edm.model.dto.DivisionDto;
 import edm.service.DivisionService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(path = "/divisions")
@@ -19,7 +18,7 @@ public class DivisionController {
     private DivisionService divisionService;
 
     @GetMapping
-    public ResponseEntity<List<DivisionDto>> getAllDivisions(
+    public ResponseEntity<Page<DivisionDto>> getAllDivisions(
             @RequestParam(defaultValue = "0", required = false) Integer pageNumber,
             @RequestParam(defaultValue = "5", required = false) Integer pageSize,
             @RequestParam(defaultValue = "id", required = false) String sortBy) {

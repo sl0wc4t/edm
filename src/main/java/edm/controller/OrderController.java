@@ -4,12 +4,11 @@ import edm.model.dto.OrderDto;
 import edm.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(path = "/orders")
@@ -19,7 +18,7 @@ public class OrderController {
     private OrderService orderService;
 
     @GetMapping
-    public ResponseEntity<List<OrderDto>> getAllOrders(
+    public ResponseEntity<Page<OrderDto>> getAllOrders(
             @RequestParam(defaultValue = "0", required = false) Integer pageNumber,
             @RequestParam(defaultValue = "5", required = false) Integer pageSize,
             @RequestParam(defaultValue = "id", required = false) String sortBy) {
