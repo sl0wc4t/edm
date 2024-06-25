@@ -21,8 +21,15 @@ public class OrderController {
     public ResponseEntity<Page<OrderDto>> getAllOrders(
             @RequestParam(defaultValue = "0", required = false) Integer pageNumber,
             @RequestParam(defaultValue = "5", required = false) Integer pageSize,
-            @RequestParam(defaultValue = "id", required = false) String sortBy) {
-        return ResponseEntity.ok(orderService.getAll(pageNumber, pageSize, sortBy));
+            @RequestParam(defaultValue = "id", required = false) String sortBy,
+            @RequestParam(required = false) Long id,
+            @RequestParam(required = false) String subject,
+            @RequestParam(required = false) String author,
+            @RequestParam(required = false) String performer,
+            @RequestParam(required = false) String deadline,
+            @RequestParam(required = false) String controlSign,
+            @RequestParam(required = false) String executionSign) {
+        return ResponseEntity.ok(orderService.getAll(pageNumber, pageSize, sortBy, id, subject, author, performer, deadline, controlSign, executionSign));
     }
 
     @GetMapping(path = "/{id}")

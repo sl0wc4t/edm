@@ -21,8 +21,12 @@ public class EmployeeController {
     public ResponseEntity<Page<EmployeeDto>> getAllEmployees(
             @RequestParam(defaultValue = "0", required = false) Integer pageNumber,
             @RequestParam(defaultValue = "5", required = false) Integer pageSize,
-            @RequestParam(defaultValue = "id", required = false) String sortBy) {
-        return ResponseEntity.ok(employeeService.getAll(pageNumber, pageSize, sortBy));
+            @RequestParam(defaultValue = "id", required = false) String sortBy,
+            @RequestParam(required = false) Long id,
+            @RequestParam(required = false) String firstname,
+            @RequestParam(required = false) String lastname,
+            @RequestParam(required = false) String middlename) {
+        return ResponseEntity.ok(employeeService.getAll(pageNumber, pageSize, sortBy, id, firstname, lastname, middlename));
     }
 
     @GetMapping(path = "/{id}")

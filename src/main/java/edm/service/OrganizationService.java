@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,9 +20,26 @@ public class OrganizationService {
 
     private OrganizationRepository organizationRepository;
 
-    public Page<OrganizationDto> getAll(Integer pageNumber, Integer pageSize, String field) {
+    public Page<OrganizationDto> getAll(Integer pageNumber, Integer pageSize, String field,
+                                        Long id, String namePart, String physicalAddressPart, String legalAddressPart, String headPart) {
         Pageable pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by(field));
-        return organizationRepository.findAll(pageRequest)
+        Specification<Organization> specification = OrganizationRepository.defaultCriteria();
+        if (id != null) {
+            specification = specification.and(OrganizationRepository.hasId(id));
+        }
+        if (namePart != null) {
+            specification = specification.and(OrganizationRepository.nameStartsWith(namePart));
+        }
+        if (physicalAddressPart != null) {
+            specification = specification.and(OrganizationRepository.physicalAddressStartsWith(physicalAddressPart));
+        }
+        if (legalAddressPart != null) {
+            specification = specification.and(OrganizationRepository.legalAddressStartsWith(legalAddressPart));
+        }
+        if (headPart != null) {
+            specification = specification.and(OrganizationRepository.headStartsWith(headPart));
+        }
+        return organizationRepository.findAll(specification, pageRequest)
                 .map(this::toDto);
     }
 

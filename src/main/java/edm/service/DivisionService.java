@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,9 +20,23 @@ public class DivisionService {
 
     private DivisionRepository divisionRepository;
 
-    public Page<DivisionDto> getAll(Integer pageNumber, Integer pageSize, String field) {
+    public Page<DivisionDto> getAll(Integer pageNumber, Integer pageSize, String field,
+                                    Long id, String namePart, String contactDetailsPart, String headPart) {
         Pageable pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by(field));
-        return divisionRepository.findAll(pageRequest)
+        Specification<Division> specification = DivisionRepository.defaultCriteria();
+        if (id != null) {
+            specification = specification.and(DivisionRepository.hasId(id));
+        }
+        if (namePart != null) {
+            specification = specification.and(DivisionRepository.nameStartsWith(namePart));
+        }
+        if (contactDetailsPart != null) {
+            specification = specification.and(DivisionRepository.contactDetailsStartsWith(contactDetailsPart));
+        }
+        if (headPart != null) {
+            specification = specification.and(DivisionRepository.headStartsWith(headPart));
+        }
+        return divisionRepository.findAll(specification, pageRequest)
                 .map(this::toDto);
     }
 

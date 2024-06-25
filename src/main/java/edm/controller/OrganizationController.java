@@ -21,8 +21,13 @@ public class OrganizationController {
     public ResponseEntity<Page<OrganizationDto>> getAllOrganizations(
             @RequestParam(defaultValue = "0", required = false) Integer pageNumber,
             @RequestParam(defaultValue = "5", required = false) Integer pageSize,
-            @RequestParam(defaultValue = "id", required = false) String sortBy) {
-        return ResponseEntity.ok(organizationService.getAll(pageNumber, pageSize, sortBy));
+            @RequestParam(defaultValue = "id", required = false) String sortBy,
+            @RequestParam(required = false) Long id,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String physicalAddress,
+            @RequestParam(required = false) String legalAddress,
+            @RequestParam(required = false) String head) {
+        return ResponseEntity.ok(organizationService.getAll(pageNumber, pageSize, sortBy, id, name, physicalAddress, legalAddress, head));
     }
 
     @GetMapping(path = "/{id}")
