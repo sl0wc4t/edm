@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import static edm.repository.OrderRepository.*;
+
 @Service
 @AllArgsConstructor
 @Transactional
@@ -26,29 +28,29 @@ public class OrderService {
     public Page<OrderDto> getAll(Integer pageNumber, Integer pageSize, String field,
                                  Long id, String subjectPart, String authorPart, String performer, String deadline, String controlSign, String executionSign) {
         Pageable pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by(field));
-        Specification<Order> specification = OrderRepository.defaultCriteria();
+        Specification<Order> criteria = defaultCriteria();
         if (id != null) {
-            specification = specification.and(OrderRepository.hasId(id));
+            criteria = criteria.and(hasId(id));
         }
         if (subjectPart != null) {
-            specification = specification.and(OrderRepository.subjectStartsWith(subjectPart));
+            criteria = criteria.and(subjectStartsWith(subjectPart));
         }
         if (authorPart != null) {
-            specification = specification.and(OrderRepository.authorStartsWith(authorPart));
+            criteria = criteria.and(authorStartsWith(authorPart));
         }
         if (performer != null) {
-            specification = specification.and(OrderRepository.performerListContains(performer));
+            criteria = criteria.and(performerListContains(performer));
         }
         if (deadline != null) {
-            specification = specification.and(OrderRepository.hasDeadline(LocalDate.parse(deadline, DateTimeFormatter.ofPattern("dd-MM-yyyy"))));
+            criteria = criteria.and(hasDeadline(LocalDate.parse(deadline, DateTimeFormatter.ofPattern("dd-MM-yyyy"))));
         }
         if (controlSign != null) {
-            specification = specification.and(OrderRepository.hasControlSign(Boolean.parseBoolean(controlSign)));
+            criteria = criteria.and(hasControlSign(Boolean.parseBoolean(controlSign)));
         }
         if (executionSign != null) {
-            specification = specification.and(OrderRepository.hasExecutionSign(Boolean.parseBoolean(executionSign)));
+            criteria = criteria.and(hasExecutionSign(Boolean.parseBoolean(executionSign)));
         }
-        return orderRepository.findAll(specification, pageRequest)
+        return orderRepository.findAll(criteria, pageRequest)
                 .map(this::toDto);
     }
 

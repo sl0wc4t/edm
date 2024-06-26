@@ -13,6 +13,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static edm.repository.EmployeeRepository.*;
+
 @Service
 @AllArgsConstructor
 @Transactional
@@ -23,20 +25,20 @@ public class EmployeeService {
     public Page<EmployeeDto> getAll(Integer pageNumber, Integer pageSize, String field,
                                     Long id, String firstNamePart, String lastnamePart, String middlenamePart) {
         Pageable pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by(field));
-        Specification<Employee> specification = EmployeeRepository.defaultCriteria();
+        Specification<Employee> criteria = defaultCriteria();
         if (id != null) {
-            specification = specification.and(EmployeeRepository.hasId(id));
+            criteria = criteria.and(hasId(id));
         }
         if (firstNamePart != null) {
-            specification = specification.and(EmployeeRepository.firstnameStartsWith(firstNamePart));
+            criteria = criteria.and(firstnameStartsWith(firstNamePart));
         }
         if (lastnamePart != null) {
-            specification = specification.and(EmployeeRepository.lastnameStartsWith(lastnamePart));
+            criteria = criteria.and(lastnameStartsWith(lastnamePart));
         }
         if (middlenamePart != null) {
-            specification = specification.and(EmployeeRepository.middlenameStartsWith(middlenamePart));
+            criteria = criteria.and(middlenameStartsWith(middlenamePart));
         }
-        return employeeRepository.findAll(specification, pageRequest)
+        return employeeRepository.findAll(criteria, pageRequest)
                 .map(this::toDto);
     }
 

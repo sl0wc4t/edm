@@ -13,6 +13,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static edm.repository.DivisionRepository.*;
+
 @Service
 @AllArgsConstructor
 @Transactional
@@ -23,20 +25,20 @@ public class DivisionService {
     public Page<DivisionDto> getAll(Integer pageNumber, Integer pageSize, String field,
                                     Long id, String namePart, String contactDetailsPart, String headPart) {
         Pageable pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by(field));
-        Specification<Division> specification = DivisionRepository.defaultCriteria();
+        Specification<Division> criteria = defaultCriteria();
         if (id != null) {
-            specification = specification.and(DivisionRepository.hasId(id));
+            criteria = criteria.and(hasId(id));
         }
         if (namePart != null) {
-            specification = specification.and(DivisionRepository.nameStartsWith(namePart));
+            criteria = criteria.and(nameStartsWith(namePart));
         }
         if (contactDetailsPart != null) {
-            specification = specification.and(DivisionRepository.contactDetailsStartsWith(contactDetailsPart));
+            criteria = criteria.and(contactDetailsStartsWith(contactDetailsPart));
         }
         if (headPart != null) {
-            specification = specification.and(DivisionRepository.headStartsWith(headPart));
+            criteria = criteria.and(headStartsWith(headPart));
         }
-        return divisionRepository.findAll(specification, pageRequest)
+        return divisionRepository.findAll(criteria, pageRequest)
                 .map(this::toDto);
     }
 

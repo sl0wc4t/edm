@@ -13,6 +13,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static edm.repository.OrganizationRepository.*;
+
 @Service
 @AllArgsConstructor
 @Transactional
@@ -23,23 +25,23 @@ public class OrganizationService {
     public Page<OrganizationDto> getAll(Integer pageNumber, Integer pageSize, String field,
                                         Long id, String namePart, String physicalAddressPart, String legalAddressPart, String headPart) {
         Pageable pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by(field));
-        Specification<Organization> specification = OrganizationRepository.defaultCriteria();
+        Specification<Organization> criteria = defaultCriteria();
         if (id != null) {
-            specification = specification.and(OrganizationRepository.hasId(id));
+            criteria = criteria.and(hasId(id));
         }
         if (namePart != null) {
-            specification = specification.and(OrganizationRepository.nameStartsWith(namePart));
+            criteria = criteria.and(nameStartsWith(namePart));
         }
         if (physicalAddressPart != null) {
-            specification = specification.and(OrganizationRepository.physicalAddressStartsWith(physicalAddressPart));
+            criteria = criteria.and(physicalAddressStartsWith(physicalAddressPart));
         }
         if (legalAddressPart != null) {
-            specification = specification.and(OrganizationRepository.legalAddressStartsWith(legalAddressPart));
+            criteria = criteria.and(legalAddressStartsWith(legalAddressPart));
         }
         if (headPart != null) {
-            specification = specification.and(OrganizationRepository.headStartsWith(headPart));
+            criteria = criteria.and(headStartsWith(headPart));
         }
-        return organizationRepository.findAll(specification, pageRequest)
+        return organizationRepository.findAll(criteria, pageRequest)
                 .map(this::toDto);
     }
 
