@@ -1,8 +1,7 @@
 package edm.model.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import edm.statemachine.state.OrderState;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,5 +32,8 @@ public class Order {
     private boolean controlSign;
 
     private boolean executionSign;
+
+    @Enumerated(EnumType.STRING)
+    private OrderState status;
 
 }

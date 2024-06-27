@@ -3,6 +3,8 @@ package edm.service;
 import edm.model.dto.OrderDto;
 import edm.model.entity.Order;
 import edm.repository.OrderRepository;
+import edm.statemachine.event.OrderEvent;
+import edm.statemachine.service.OrderStateMachineService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,6 +26,8 @@ import static edm.repository.OrderRepository.*;
 public class OrderService {
 
     private OrderRepository orderRepository;
+
+    private OrderStateMachineService orderStateMachineService;
 
     public Page<OrderDto> getAll(Integer pageNumber, Integer pageSize, String field,
                                  Long id, String subjectPart, String authorPart, String performer, String deadline, String controlSign, String executionSign) {
@@ -63,6 +67,12 @@ public class OrderService {
         return toDto(orderRepository.save(toEntity(orderDto)));
     }
 
+    public OrderDto create(OrderDto orderDto) {
+        Long id = save(orderDto).getId();
+        orderStateMachineService.create(id);
+        return getById(id);
+    }
+
     public OrderDto update(OrderDto patch) {
         OrderDto orderDto = getById(patch.getId());
         orderDto.setSubject(patch.getSubject());
@@ -71,11 +81,32 @@ public class OrderService {
         orderDto.setDeadline(patch.getDeadline());
         orderDto.setControlSign(patch.isControlSign());
         orderDto.setExecutionSign(patch.isExecutionSign());
+        orderDto.setStatus(patch.getStatus());
         return save(orderDto);
     }
 
     public void deleteById(Long id) {
         orderRepository.deleteById(id);
+    }
+
+    public OrderDto execute(Long id) {
+        orderStateMachineService.next(id, OrderEvent.EXECUTE);
+        return getById(id);
+    }
+
+    public OrderDto validate(Long id) {
+        orderStateMachineService.next(id, OrderEvent.VALIDATE);
+        return getById(id);
+    }
+
+    public OrderDto approve(Long id) {
+        orderStateMachineService.next(id, OrderEvent.APPROVE);
+        return getById(id);
+    }
+
+    public OrderDto reject(Long id) {
+        orderStateMachineService.next(id, OrderEvent.REJECT);
+        return getById(id);
     }
 
     private OrderDto toDto(Order order) {
@@ -87,6 +118,7 @@ public class OrderService {
                 .deadline(order.getDeadline())
                 .controlSign(order.isControlSign())
                 .executionSign(order.isExecutionSign())
+                .status(order.getStatus())
                 .build();
     }
 

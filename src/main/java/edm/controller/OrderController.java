@@ -39,7 +39,7 @@ public class OrderController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<OrderDto> addNewOrder(@Valid @RequestBody OrderDto orderDto) {
-        return new ResponseEntity<>(orderService.save(orderDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(orderService.create(orderDto), HttpStatus.CREATED);
     }
 
     @PatchMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -51,6 +51,26 @@ public class OrderController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteOrderById(@PathVariable("id") Long id) {
         orderService.deleteById(id);
+    }
+
+    @PatchMapping(path = "/{id}/execute")
+    public ResponseEntity<OrderDto> execute(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(orderService.execute(id));
+    }
+
+    @PatchMapping(path = "/{id}/validate")
+    public ResponseEntity<OrderDto> validate(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(orderService.validate(id));
+    }
+
+    @PatchMapping(path = "/{id}/approve")
+    public ResponseEntity<OrderDto> approve(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(orderService.approve(id));
+    }
+
+    @PatchMapping(path = "/{id}/reject")
+    public ResponseEntity<OrderDto> reject(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(orderService.reject(id));
     }
 
 }
