@@ -25,6 +25,7 @@ public class OrderStateMachineConfiguration extends EnumStateMachineConfigurerAd
 
     @Override
     public void configure(final StateMachineStateConfigurer<OrderState, OrderEvent> states) throws Exception {
+
         states
                 .withStates()
                 .initial(PREPARATION)
@@ -34,6 +35,7 @@ public class OrderStateMachineConfiguration extends EnumStateMachineConfigurerAd
 
     @Override
     public void configure(StateMachineTransitionConfigurer<OrderState, OrderEvent> transitions) throws Exception {
+
         transitions
                 .withExternal()
                 .source(PREPARATION)
@@ -67,6 +69,7 @@ public class OrderStateMachineConfiguration extends EnumStateMachineConfigurerAd
 
     @Override
     public void configure(StateMachineConfigurationConfigurer<OrderState, OrderEvent> config) throws Exception {
+
         config
                 .withConfiguration()
                 .autoStartup(true);
@@ -74,6 +77,7 @@ public class OrderStateMachineConfiguration extends EnumStateMachineConfigurerAd
 
     @Bean
     public StateMachinePersister<OrderState, OrderEvent, Long> stateMachinePersister(OrderStateMachinePersist orderStateMachinePersist) {
+
         return new DefaultStateMachinePersister<>(orderStateMachinePersist);
     }
 

@@ -2,38 +2,37 @@ package edm.model.entity;
 
 import edm.statemachine.state.OrderState;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Entity(name = "orders")
+@Data
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Order {
 
     @Id
-    @GeneratedValue
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
 
-    private String subject;
+    String subject;
 
-    private String author;
+    String author;
 
-    private List<String> performerList;
+    List<String> performerList;
 
-    private LocalDate deadline;
+    LocalDate deadline;
 
-    private boolean controlSign;
+    boolean controlSign;
 
-    private boolean executionSign;
+    boolean executionSign;
 
     @Enumerated(EnumType.STRING)
-    private OrderState status;
+    OrderState status;
 
 }

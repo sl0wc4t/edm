@@ -14,6 +14,7 @@ public class DefaultAdviceController {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+
         return ResponseEntity.ok(
                 e.getBindingResult().getAllErrors().stream()
                         .map(DefaultMessageSourceResolvable::getDefaultMessage)
@@ -22,6 +23,7 @@ public class DefaultAdviceController {
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<?> handleEntityNotFoundException(EntityNotFoundException e) {
+
         return ResponseEntity.ok(e.getMessage());
     }
 

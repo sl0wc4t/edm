@@ -3,7 +3,9 @@ package edm.controller;
 import edm.model.dto.EmployeeDto;
 import edm.service.EmployeeService;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -12,10 +14,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/employees")
-@AllArgsConstructor
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class EmployeeController {
 
-    private EmployeeService employeeService;
+    EmployeeService employeeService;
 
     @GetMapping
     public ResponseEntity<Page<EmployeeDto>> getAllEmployees(
@@ -26,27 +29,32 @@ public class EmployeeController {
             @RequestParam(required = false) String firstname,
             @RequestParam(required = false) String lastname,
             @RequestParam(required = false) String middlename) {
+
         return ResponseEntity.ok(employeeService.getAll(pageNumber, pageSize, sortBy, id, firstname, lastname, middlename));
     }
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable("id") Long id) {
+
         return ResponseEntity.ok(employeeService.getById(id));
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EmployeeDto> addNewEmployee(@Valid @RequestBody EmployeeDto employeeDto) {
+
         return new ResponseEntity<>(employeeService.save(employeeDto), HttpStatus.CREATED);
     }
 
     @PatchMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EmployeeDto> updateEmployee(@Valid @RequestBody EmployeeDto patch) {
+
         return ResponseEntity.ok(employeeService.update(patch));
     }
 
     @DeleteMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteEmployeeById(@PathVariable("id") Long id) {
+
         employeeService.deleteById(id);
     }
 

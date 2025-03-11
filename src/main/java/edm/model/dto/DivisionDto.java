@@ -2,27 +2,26 @@ package edm.model.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class DivisionDto {
 
-    private Long id;
+    Long id;
 
     @NotNull(message = "Name is required")
     @Size(min = 5, max = 50, message = "Name must be 5-50 characters long")
-    private String name;
+    String name;
 
     @NotNull(message = "Contact details is required")
-    private String contactDetails;
+    String contactDetails;
 
     @NotNull(message = "Head is required")
-    private String head;
+    String head;
 
 }

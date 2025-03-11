@@ -3,28 +3,27 @@ package edm.model.entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Entity(name = "organizations")
+@Data
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Organization {
 
     @Id
     @GeneratedValue
-    private Long id;
+    Long id;
 
-    private String name;
+    String name;
 
-    private String physicalAddress;
+    String physicalAddress;
 
-    private String legalAddress;
+    String legalAddress;
 
-    private String head;
+    String head;
 
 }

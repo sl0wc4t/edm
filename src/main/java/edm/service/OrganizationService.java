@@ -4,7 +4,9 @@ import edm.model.dto.OrganizationDto;
 import edm.model.entity.Organization;
 import edm.repository.OrganizationRepository;
 import jakarta.persistence.EntityNotFoundException;
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,14 +18,22 @@ import org.springframework.transaction.annotation.Transactional;
 import static edm.repository.OrganizationRepository.*;
 
 @Service
-@AllArgsConstructor
 @Transactional
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class OrganizationService {
 
-    private OrganizationRepository organizationRepository;
+    OrganizationRepository organizationRepository;
 
-    public Page<OrganizationDto> getAll(Integer pageNumber, Integer pageSize, String field,
-                                        Long id, String namePart, String physicalAddressPart, String legalAddressPart, String headPart) {
+    public Page<OrganizationDto> getAll(Integer pageNumber,
+                                        Integer pageSize,
+                                        String field,
+                                        Long id,
+                                        String namePart,
+                                        String physicalAddressPart,
+                                        String legalAddressPart,
+                                        String headPart) {
+
         Pageable pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by(field));
         Specification<Organization> criteria = defaultCriteria();
         if (id != null) {
@@ -41,33 +51,40 @@ public class OrganizationService {
         if (headPart != null) {
             criteria = criteria.and(headStartsWith(headPart));
         }
+
         return organizationRepository.findAll(criteria, pageRequest)
                 .map(this::toDto);
     }
 
     public OrganizationDto getById(Long id) {
+
         return toDto(organizationRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("No Organization found with id = " + id)));
     }
 
     public OrganizationDto save(OrganizationDto organizationDto) {
+
         return toDto(organizationRepository.save(toEntity(organizationDto)));
     }
 
     public OrganizationDto update(OrganizationDto patch) {
+
         OrganizationDto organizationDto = getById(patch.getId());
         organizationDto.setName(patch.getName());
         organizationDto.setPhysicalAddress(patch.getPhysicalAddress());
         organizationDto.setLegalAddress(patch.getLegalAddress());
         organizationDto.setHead(patch.getHead());
+
         return save(organizationDto);
     }
 
     public void deleteById(Long id) {
+
         organizationRepository.deleteById(id);
     }
 
     private OrganizationDto toDto(Organization organization) {
+
         return OrganizationDto.builder()
                 .id(organization.getId())
                 .name(organization.getName())
@@ -78,6 +95,7 @@ public class OrganizationService {
     }
 
     private Organization toEntity(OrganizationDto organizationDto) {
+
         return Organization.builder()
                 .id(organizationDto.getId())
                 .name(organizationDto.getName())
